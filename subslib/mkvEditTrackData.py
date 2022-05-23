@@ -6,7 +6,6 @@ increase episode count with each file, example:
 Avatar The Last Airbender - 1x02
 That would be the 2nd file in the list given the
 season number given was 1.
-
 It asks if there is a subtitle track that should
 be Signs and Songs and Forced, or if there is one
 that is full English Subtitles and does not force it
@@ -35,6 +34,7 @@ of an MKV to add in the name of the file/show
 '''
 #"C:/Program Files/MKVToolNix/mkvpropedit.exe" --edit info --set "title=!name!" --edit track:s%a% --set flag-default=1 --set flag-forced=1 --set name="Signs & Songs" --edit track:s%b% --set flag-default=0 --set flag-forced=0 --set name="English Subtitles" "%%f"
 cli_command = [r"C:/Program Files/MKVToolNix/mkvpropedit.exe", "--edit", "info", "--set", '"title=!name!"', "--edit", "track:s%a%", "--set", "language=eng", "--set", "flag-default=1", "--set", "flag-forced=1", "--set", 'name=Signs & Songs', "--edit", "track:s%b%", "--set", "language=eng", "--set", "flag-default=0", "--set", "flag-forced=0", "--set", 'name=English Subtitles', 'Show Name.mkv']
+#					0											1			2		3		4				5			6			7			8				9		10				11			12				13		14						15		16				17		18				19		20					21		22				23			24						25
 #22 entries in that list, 1-4 Title, 5-14 Signs, 15-24, English
 
 '''
@@ -46,23 +46,26 @@ track ID was entered instead
 '''
 def update_cli_tracks(signid, engid):
 	print()
+	i_kpnme = 0
 	cli_command.pop(16)
 	cli_command.pop(6)
 	cli_command.insert(6, "track:s" + signid)
 	cli_command.insert(16, "track:s" + engid)
 	if engid != "" or signid != "":
 		choice_keep_names = input("Type 1 if you want to keep subtitle name as is: ")
-		if engid != "" and choice_keep_names == "1":
+		if choice_keep_names == "1":
+			i_kpnme = 2
+		if engid == "" and choice_keep_names == "1":
 			cli_command.pop(24)
 			cli_command.pop(23)
-		if signid != "" and choice_keep_names == "1":
+		if signid == "" and choice_keep_names == "1":
 			cli_command.pop(14)
 			cli_command.pop(13)
 	if engid == "":
-		for x in range(24, 14, -1):
+		for x in range(24 - i_kpnme, 14 - i_kpnme, -1):
 			cli_command.pop(x)
 	if signid == "":
-		for x in range(14, 4, -1):
+		for x in range(14 - i_kpnme, 4 - i_kpnme, -1):
 			cli_command.pop(x)
 			
 
@@ -74,10 +77,12 @@ Adds a 0 before the number if under 10
 '''
 def update_cli(file, episode_number):
 	if choice_title != "":
-		if episode_number < 10:
+		if episode_number < 10 and choice_season != "":
 			ep_title = choice_title + " - " + choice_season + "x0" + str(episode_number)
-		else:
+		elif episode_number >= 10 and choice_season != "":
 			ep_title = choice_title + " - " + choice_season + "x" + str(episode_number)
+		elif choice_season == "":
+			ep_title = choice_title
 		
 		cli_command.pop(4)
 		cli_command.insert(4, "title=" + ep_title)
