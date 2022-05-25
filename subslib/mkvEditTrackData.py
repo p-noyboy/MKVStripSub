@@ -55,17 +55,16 @@ def update_cli_tracks(signid, engid):
 		choice_keep_names = input("Type 1 if you want to keep subtitle name as is: ")
 		if choice_keep_names == "1":
 			i_kpnme = 2
-		if engid == "" and choice_keep_names == "1":
-			cli_command.pop(24)
+		if choice_keep_names == "1":
+			cli_command.pop(24) #Removes dialogue names
 			cli_command.pop(23)
-		if signid == "" and choice_keep_names == "1":
-			cli_command.pop(14)
+			cli_command.pop(14) #Removes signs names
 			cli_command.pop(13)
 	if engid == "":
-		for x in range(24 - i_kpnme, 14 - i_kpnme, -1):
+		for x in range(24 - (i_kpnme * 2), 14 - i_kpnme, -1):
 			cli_command.pop(x)
 	if signid == "":
-		for x in range(14 - i_kpnme, 4 - i_kpnme, -1):
+		for x in range(14 - i_kpnme, 4, -1):
 			cli_command.pop(x)
 			
 
