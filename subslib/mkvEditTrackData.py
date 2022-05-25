@@ -32,7 +32,7 @@ of an MKV to add in the name of the file/show
 14 - Subtitle track number that is NOT Signs and Songs
 21 - File name that is being edited
 '''
-#"C:/Program Files/MKVToolNix/mkvpropedit.exe" --edit info --set "title=!name!" --edit track:s%a% --set flag-default=1 --set flag-forced=1 --set name="Signs & Songs" --edit track:s%b% --set flag-default=0 --set flag-forced=0 --set name="English Subtitles" "%%f"
+#"C:/Program Files/MKVToolNix/mkvpropedit.exe" --edit info --set "title=!name!" --edit track:s%a% --set flag-default=1 --set flag-forced=1 --set name="Signs & Songs" --edit track:s%b% --set flag-default=0 --set flag-forced=0 --set name="English Dialogue" "%%f"
 cli_command = [r"C:/Program Files/MKVToolNix/mkvpropedit.exe", "--edit", "info", "--set", '"title=!name!"', "--edit", "track:s%a%", "--set", "language=eng", "--set", "flag-default=1", "--set", "flag-forced=1", "--set", 'name=Signs & Songs', "--edit", "track:s%b%", "--set", "language=eng", "--set", "flag-default=0", "--set", "flag-forced=0", "--set", 'name=English Subtitles', 'Show Name.mkv']
 #					0											1			2		3		4				5			6			7			8				9		10				11			12				13		14						15		16				17		18				19		20					21		22				23			24						25
 #22 entries in that list, 1-4 Title, 5-14 Signs, 15-24, English
