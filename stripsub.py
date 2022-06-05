@@ -6,6 +6,7 @@ from subslib.mkvChapterExtract import extract_all_chapters
 from subslib.mkvChapterReplace import replace_all_chapters
 from subslib.mkvChapterMerge import merge_all_chapters
 from subslib.mkvInfo import info_first_file
+from subslib.retimesubs import retime_subs
 import time
 
 dict_error_message = "Invalid choice, please try again"
@@ -14,6 +15,7 @@ def int_dictionary():
 	choice_dict = {
 		"1": extract_all_files,
 		"2": strip_all_files,
+		"22": retime_subs,
 		"3": merge_all_files,
 		"4": extract_strip,
 		"5": extract_strip_merge,
@@ -48,6 +50,7 @@ def menu():
 		print("* 3 Merge all subtitles into all MKV in folder")
 		print("* 4 Extract and strip subtitles from MKVs")
 		print("* 5 Extract, Strip, then Merge subs into MKV")
+		print("* 22 Retime all subtitles in folder")
 		print("* ")
 		print("* 6 Edit Title & forced subtitles")
 		print("* ")
