@@ -1,4 +1,11 @@
+'''
+Reads all subtitle ASS files in a folder,
+asks for a timestamp to change the
+time of all the lines in the subtitle,
+and rewrites it to a new file
+'''
 from datetime import datetime, timedelta
+import os
 
 finalline = []
 format = '%H:%M:%S.%f'
@@ -29,26 +36,72 @@ r"Dialogue: 0,0:00:45.60,0:00:47.27,Default,,0,0,0,,Where should we go next?"]
 
 t = "0:00:02.04"
 global changetime
-changetime = datetime.strptime(t, format)
-print(changetime)
+#changetime = datetime.strptime(t, format)
+#print(changetime)
+#=================================================================
 
-def readtimes():
-	x = 0
+#Opens file and returns all of its lines in an array
+def get_lines(file):
+	#with open(file, 'rt', encoding='utf8') as fd:
+	with open(file, 'rt', encoding='utf8') as fd:
+		all_lines = fd.readlines()
+	fd.close()
+	#print(all_lines)
+	'''
+	for line in all_lines:
+		print(line)
+	'''
+	return all_lines
+
+# Opens a new file and writes all new lines to it
+def rewrite_lines(new_file, all_lines):
+	try:
+		#all_lines.insert(2, "Script Retimed by P-NoyBoy\n")
+		wd = open(new_file, 'wt', encoding='utf8')
+		for line in all_lines:
+			wd.write(line)
+		wd.close()
+		print("	Wrote to " + new_file)
+	except:
+		"	Error printing new " + file
+
+# Gets new file name
+def get_new_file(file):
+	new_file = "ReTimed - " + file
+	return new_file
+#=================================================================
+
+'''
+Reads each line, grabs the beginning and end timestamps, 
+processes it to the new time, and recreates the line
+'''
+def readtimes(subtitles):
+	processed_lines = []
 	for line in subtitles:
+		#print(line)
+		if line[:8] != "Dialogue":
+			processed_lines.append(line)
+			continue
 		strtime = ""
 		#print(line[12:22] + " - " + line[23:33] + " - Original time")
-		begtime = datetime.strptime(line[12:22], format)
-		endtime = datetime.strptime(line[23:33], format)
-		print(line)
-		begline = line[:12]
-		endline = line[33:]
+		beg_time = datetime.strptime(line[12:22], format)
+		endt_ime = datetime.strptime(line[23:33], format)
+		#print(line)
+		beg_line = line[:12]
+		end_line = line[33:]
 		
-		fbegtime = processtime(begtime)
-		fendtime = processtime(endtime)
+		fbeg_time = processtime(beg_time)
+		fend_time = processtime(endt_ime)
 		
-		finalline.append(begline + fbegtime + "," + fendtime + endline)
-		x+=1
+		processed_lines.append(beg_line + fbeg_time + "," + fend_time + end_line)
+	return processed_lines
 
+'''
+Takes a datetime parameter and subtracts the 
+amount of time specified by the user in global
+changetime. Adds zeros if milliseconds are 0
+and shortens milliseconds to only 2 digits
+'''
 def processtime(ogtime):
 	alteredtime = ogtime - changetime
 	
@@ -58,40 +111,50 @@ def processtime(ogtime):
 		strtime = str(alteredtime)
 	return strtime[:-4]
 
-def printtimes():
+'''
+Prints each line in finalline
+'''
+def printtimes(finallines):
 	x = 0
-	for line in finalline:
-		print(finalline[x])
+	for line in finallines:
+		print(" -- " + finallines[x][:-1])
 		x+=1
 
+'''
+Gets a new timestamp from the user. 
+'''
+def get_changetime():
+	bol_a = True
+	global changetime
+	while bol_a == True:
+		print("Please enter a time in the format 03:02.04 where 03 is minutes, 02 is seconds, .04 is milliseconds.")
+		t = input()
+		try:
+			changetime = datetime.strptime("0:" + t, format)
+			bol_a = False
+		except:
+			continue
 
-readtimes()
-print("===============================")
-printtimes()
-input()
+'''
+Main function. Reads each line in an ass subtitle
+file and changes the timestamp to a new file
+'''
+def main_file_processer():
+	all_files = os.listdir()
+	is_first = True
+	for file in all_files:
+			if file.endswith(".ass"):
+				if is_first == True:
+					get_changetime()
+					is_first = False
+				all_lines = get_lines(file)
+				finallines = readtimes(all_lines)
+				#printtimes(finallines)
+				new_file = get_new_file(file)
+				rewrite_lines(new_file, finallines)
+	print()
+	print("======================================================")
+	print("	Finished processing all files")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+if __name__ == '__main__':
+	main_file_processer()
