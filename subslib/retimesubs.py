@@ -139,7 +139,7 @@ def get_changetime():
 Main function. Reads each line in an ass subtitle
 file and changes the timestamp to a new file
 '''
-def main_file_processer():
+def retime_subs():
 	all_files = os.listdir()
 	is_first = True
 	for file in all_files:
